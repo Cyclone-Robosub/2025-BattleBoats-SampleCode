@@ -95,25 +95,27 @@ Note that we've introduced some mathematical operations. `*` means "times" (i.e.
 If we bring this all together, it might look something like this:
 
 ```C
-int x = 42;
-int y = 100;
-y = y + 1;
-int a = 50;
-int b = a + 50;
-int c = b / 2;
-int d = (b + a) * 10;
-int e = a - (2 * b);
+#include <stdio.h>
+int main() {
+    int x = 42;
+    int y = 100;
+    y = y + 1;
+    int a = 50;
+    int b = a + 50;
+    int c = b / 2;
+    int d = (b + a) * 10;
+    int e = a - (2 * b);
 
-printf("%d\n", x);
-printf("%d\n", y);
-printf("%d\n", a);
-printf("%d\n", b);
-printf("%d\n", c);
-printf("%d\n", d);
-printf("%d\n", e);
+    printf("%d\n", x);
+    printf("%d\n", y);
+    printf("%d\n", a);
+    printf("%d\n", b);
+    printf("%d\n", c);
+    printf("%d\n", d);
+    printf("%d\n", e);
 
-return 0;
-
+    return 0;
+}
 ```
 This program will print:
 ```
@@ -207,7 +209,7 @@ Additionally, the following are valid boolean operators:
 
 These can be combined into longer statements, like this: 
 ```C
- (x != 1) && (!(x > 5) || (y != 0) || (z == 8))
+(x != 1) && (!(x > 5) || (y != 0) || (z == 8))
 ```
 
 This can be read as something that is true if:
