@@ -166,6 +166,8 @@ char someString[] = "Hello, world!\n";
 
 When we printed "Hello, world!" at the start, we were using a string. We won't go into strings too much right now because they can get pretty complicated pretty fast due to C's need to manually manage its own memory.
 
+One special rule for strings compared to other lists is that they always end with the null character `'\0'`. This tells the compiler where the end of the string is.
+
 ### Arrays
 Arrays are lists. We can have a list of any of the datatypes we've talked about so far: lists of ints, floats, chars, or even other lists! To define them, we use the format "`type name[] = value`". Note the square brackets []: these are what we use to specify that we want a list, rather than the base datatype. Here's an example:
 ```C
@@ -174,5 +176,197 @@ float someArray[] = {42, 85.2, 33, 100.42};
 
 To access an element in the array, use the square bracket location, i.e. `someArray[0]` is `42`. Note that array indexing starts at `0` rather than `1`! This means that the last element in the array is at index `3`, **not** `4`. As strings are just arrays of characters, you can index into a string in the same way (i.e. `someString[1]` from the earlier example is `e`);
 
-## Conditionals
-Put simply, conditionals are "if statements." These are used to control logic flow in a program.
+As mentioned in the strings section, arrays can get pretty complicated pretty fast. We'll skip over most of it. Just keep in mind that you can't resize an array (i.e. add more elements to the end, or make it shorter).
+
+## Conditionals and Boolean Logic
+Put simply, conditionals are "if statements." These are used to control logic flow in a program. For example, maybe we want to do something different if a number is less than 0 rather than if it's greater than or equal to 0. We can do this specific example like so:
+```C
+if (x < 0) {
+ // Code for if x is less than 0 here
+}
+else {
+ // Code for if x is greater than 0 here
+}
+```
+We run the first section of code if and only if x is less than 0, and the second if and only if x is greater than or equal to 0. Note that a double slash (`//`) signifies a comment, which is text that the compiler will ignore. Comparison operators include:
+```
+<: less than
+>: greater than
+<=: less than or equal to
+>=: greater than or equal to
+==: equal to
+!=: not equal to
+```
+
+Additionally, the following are valid boolean operators:
+```
+!: not
+||: or
+&&: and
+```
+
+These can be combined into longer statements, like this: 
+```C
+ (x != 1) && (!(x > 5) || (y != 0) || (z == 8))
+```
+
+This can be read as something that is true if:
+- x is not equal to 1, and either...
+    - x is not greater than 5, or...
+    - y is not equal to 0, or...
+    - z is equal to 8
+
+Otherwise, the whole statement will be false.
+
+Booleans are actually a datatype in and of themselves. Behind the scenes they're just integers, but by adding `#include <stdbool.h>` to the top of your program, you can use `bool`, `true`, and `false` in your program like so:
+```C
+bool someFlag = false;
+bool someOtherFlag = true;
+if (someFlag) {
+    // will not run
+}
+if (someOtherFlag) {
+    // will run
+}
+```
+
+## Loops
+Loops allow us to repeat code for a certain number of times, or until a condition is met. There are two main types of loops: while loops and for loops. One loop is not more powerful than the other: anything that can be done with a while loop can be done with a for loop, and vice versa.
+
+While loops have a similar syntax to if statements. They will execute their code over and over again, until their condition is false. For example, to print all the integers from 1 to 10:
+```C
+int i = 1;
+while (i < 11) {
+    printf("%d\n", i);
+    i++;
+}
+```
+
+This pattern of initializing an index variable, looping until a condition is met, and incrementing that variable each time, is really common. For loops allow us to write that same pattern in a more compact manner. The following code produces the same thing (all integers from 1 to 10):
+```C
+for (int i = 1; i < 11; i++) {
+    printf("%d\n", i);
+}
+```
+Before the for loop iterates, it will complete the initialization step (creating a variable `i` and setting its value to `1`). Then, for each iteration of the loop, it will first check if the condition is met (in this case, `i < 11`). If it is not met (evaluates to `false`), the loop exits. If it is met (evaluates to `true`), the loop body is executed (the print statement). Then, finally, the iteration step occurs, incrementing `i` by `1`.
+
+Combining loops and conditionals allows us to write really complicated programs. However, there's another tool that helps us to write code more neatly and efficiently: functions.
+
+## Functions
+Functions allow us to give segments of code a name, and re-use them throughout the program. `main()`, which we've seen before, is an example of a function. Here's another example, showing a simple function that adds two integers together:
+```C
+int sum(int a, int b) {
+    c = a + b;
+    return c;
+}
+```
+Here's a quick breakdown of the components to this function:
+1. The first `int` is the return type of the function. This says what datatype the function gives back when it completes. If it doesn't give anything back, then this should be `void`.
+2. The word `sum` is the name of the function. This is what we use when we want to "call" the function (demonstrated shortly).
+3. This function takes two arguments, `a` and `b`. These are variables that must be given to (passed to) the function whenever it is called. We have to specify their types as well. Here, they're both integers (`int`).
+4. Finally, we have the body of the function. We make a new variable called `c`, which we assign to the value of the sum of `a` and `b`. Then, we return the value in `c`. This means that we give back the sum of `a` and `b` to whoever called the function.
+    - Note that we could also have written just `return a + b` if we wanted to be more concise.
+
+Functions are often defined in their own files, but if they're in the same file as the main function, they must be defined before (above) any calls are made to them.
+
+Here's what it might look like to call the function:
+```C
+#include <stdio.h>
+
+int sum(int a, int b) {
+    c = a + b;
+    return c;
+}
+
+int main() {
+    int x = 5;
+    int y = 6;
+    int z = sum(x,y); // z will be set to x + y
+    printf("The value of z is: %d\n", z);
+    return 0;
+}
+```
+
+In this example, `sum(x,y)` "evaluates to" 11, which is the return value of the function. We can call functions within other functions, however much we want. In fact, we're doing so in the example above: as stated above, `main()` is also a function! However, to drive the point home, this program could also have been written like this:
+```C
+#include <stdio.h>
+
+int sum(int a, int b) {
+    c = a + b;
+    return c;
+}
+
+int main() {
+    int x = 5;
+    int y = 6;
+    printf("The sum is: %d\n", sum(x,y));
+    return 0;
+}
+```
+We got rid of `z`, and just used the return value of the function directly in the call to `printf()`. This is totally fine, and works just as well as the previous method!
+
+Another important point to note here is that when you pass a variable to a function, the function gets a the **value** of that variable, not the **variable itself**. Consider the following example:
+
+```C
+void attemptToSum(int a, int b, int c) {
+    c = a + b;
+}
+
+int main() {
+    int a = 5;
+    int b = 6;
+    int c = 0;
+    attemptToSum(a,b,c);
+    printf("The sum is: %d\n", c); // This prints 0!
+}
+```
+
+An important revelation here is that the name of the variable being passed into the function doesn't matter. Even though the names of the parameters of `attemptToSum()` matches the names of the arguments passed to it, they're actually different variables! The variables `a`, `b`, and `c` in `attemptToSum()` are different variables than the variables `a`, `b`, and `c` defined in `main()`. Changing variable `c` in `attemptToSum()`  did *not* change variable `c` in `main()`.
+
+These examples of functions aren't actually much use in real life. Instead of a `sum()` function, it's much easier (and more sensible!) to just use the `+` operator like a normal human being. However, their true power will become obvious as you code. Any time you find yourself doing a "step" in your problem solving process, consider making that a function! For example, here's an actual implementation of the `printf()` function (from https://svnweb.freebsd.org/base/head/lib/libc/stdio/printf.c?view=markup):
+```C
+int printf(char const * __restrict fmt, ...) {
+    int ret;
+    va_list ap;
+
+    va_start(ap, fmt);
+    ret = vfprintf(stdout, fmt, ap);
+    va_end(ap);
+    return (ret);
+}
+```
+Notice how much nicer it is to not have to write that every time you want to print something to the display? And also notice how it's not doing much except just calling another function, `vfprintf()`? The reason that I didn't include that is because the file defining that is over 1000 lines long. If you'd like to look at it, it's here: https://svnweb.freebsd.org/base/head/lib/libc/stdio/vfprintf.c?view=markup
+
+## Variable Scope
+One more point to be aware of is something called "variable scope". The basic idea is that variables only exist within the curly brackets that they were created. Consider the following:
+```C
+int main() {
+    int x = 5;
+    if (x > 0) {
+        int y = 10; // y starts existing
+        printf("x is greater than 0.\n");
+    } // y stops existing
+    else {
+        int y = -10; // A new y starts existing
+        printf("x is less than 0.\n");
+    } // The new y stops existing
+    printf("The value of y is: %d\n", y) // ERROR! y does not exist!
+    return 0;
+}
+```
+
+This can particularly create issues in for loops. If you create a for loop like this:
+```C
+for (int i = 0; i < 42; i++) {
+    // Do whatever
+}
+// i does not exist here!
+```
+You cannot access `i` after the loop terminates! If you need to access `i` afterwards, you can write it like this instead:
+```C
+int i;
+for (i = 0; i < 42; i++) {
+    // Do whatever
+}
+// i still exists here!
+```
