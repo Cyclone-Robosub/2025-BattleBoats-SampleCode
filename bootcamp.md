@@ -90,7 +90,7 @@ int c = b / 2;
 int d = (b + a) * 10;
 int e = a - (2 * b);
 ```
-Note that we've introduced some mathematical operations. `*` means "times" (i.e. 3*2 = 6), and `\` means "divided by" (i.e. 6/2 = 3).
+Note that we've introduced some mathematical operations. `*` means "times" (i.e. 3*2 = 6), and `\` means "divided by" (i.e. 6/2 = 3). Not shown is modulo `%`. This means to take the remainder. For example, 21 % 4 = 1, 4 % 2 = 0, and 5 % 2 = 1.
 
 If we bring this all together, it might look something like this:
 
@@ -129,7 +129,7 @@ This program will print:
 ### Floating Point Numbers
 Another common datatype is the floating point number, or "float." These are all real numbers, like "42.0," "-8.31," or "100000.00001." A very similar datatype is "double", which does the same job as a float, except that it stores numbers with double the precision of a float. They can defined and used very similarly to an integer:
 
-```
+```C
 float x = 42.8;
 float y = x - 5;
 float z = 50;
@@ -256,14 +256,14 @@ Combining loops and conditionals allows us to write really complicated programs.
 Functions allow us to give segments of code a name, and re-use them throughout the program. `main()`, which we've seen before, is an example of a function. Here's another example, showing a simple function that adds two integers together:
 ```C
 int sum(int a, int b) {
-    c = a + b;
+    int c = a + b;
     return c;
 }
 ```
 Here's a quick breakdown of the components to this function:
 1. The first `int` is the return type of the function. This says what datatype the function gives back when it completes. If it doesn't give anything back, then this should be `void`.
-2. The word `sum` is the name of the function. This is what we use when we want to "call" the function (demonstrated shortly).
-3. This function takes two arguments, `a` and `b`. These are variables that must be given to (passed to) the function whenever it is called. We have to specify their types as well. Here, they're both integers (`int`).
+2. The word `sum` is the name of the function. This is what we use when we want to "call" (use) the function (demonstrated shortly).
+3. This function has two parameters, `a` and `b`. These are variables that must be given to (passed to) the function whenever it is called. We have to specify their types as well. Here, they're both integers (`int`).
 4. Finally, we have the body of the function. We make a new variable called `c`, which we assign to the value of the sum of `a` and `b`. Then, we return the value in `c`. This means that we give back the sum of `a` and `b` to whoever called the function.
     - Note that we could also have written just `return a + b` if we wanted to be more concise.
 
@@ -274,7 +274,7 @@ Here's what it might look like to call the function:
 #include <stdio.h>
 
 int sum(int a, int b) {
-    c = a + b;
+    int c = a + b;
     return c;
 }
 
@@ -287,12 +287,16 @@ int main() {
 }
 ```
 
-In this example, `sum(x,y)` "evaluates to" 11, which is the return value of the function. We can call functions within other functions, however much we want. In fact, we're doing so in the example above: as stated above, `main()` is also a function! However, to drive the point home, this program could also have been written like this:
+First, a note on terminology: when we talk about the variables in the definition of the function, we call them "parameters," and when we talk about the variables passed to the function when it is called, we call them "arguments." Therefore, we'd say that `sum()` has two parameters, `a` and `b`, and in this case its arguments are `x` and `y` (or equivalently, 5 and 6).
+
+In this example, `sum(x,y)` "evaluates to" 11, which is the return value of the function. Therefore, `z` is set to `11`, which is then printed in the line beneath.
+
+We can call functions within other functions, however much we want. In fact, we're doing so in the example above: as stated above, `main()` is also a function! However, to drive the point home, this program could also have been written like this:
 ```C
 #include <stdio.h>
 
 int sum(int a, int b) {
-    c = a + b;
+    int c = a + b;
     return c;
 }
 
@@ -342,18 +346,25 @@ One more point to be aware of is something called "variable scope". The basic id
 ```C
 int main() {
     int x = 5;
+
     if (x > 0) {
         int y = 10; // y starts existing
         printf("x is greater than 0.\n");
+
+        for (int i = 0; i < 10; i++) {
+            printf("Here's y: %d on iteration %d\n", y, i);
+        }
     } // y stops existing
     else {
         int y = -10; // A new y starts existing
         printf("x is less than 0.\n");
     } // The new y stops existing
+
     printf("The value of y is: %d\n", y) // ERROR! y does not exist!
     return 0;
 }
 ```
+Note how `y` stops existing once the close curly bracket (`}`) is reached.
 
 This can particularly create issues in for loops. If you create a for loop like this:
 ```C
@@ -369,4 +380,189 @@ for (i = 0; i < 42; i++) {
     // Do whatever
 }
 // i still exists here!
+```
+
+## Examples
+Here are a few more examples for reference. In fact, they're implementations of the same examples listed at the beginning of the guide! You might not understand everything in the examples, but they should hopefully still be helpful as a starting point. Feel free to search up anything you don't understand on the Internet! stackoverflow and geeksforgeeks are your friends.
+
+### Calculate the area of a circle
+```C
+#include <stdio.h>
+#include <math.h> // for M_PI
+
+float areaOfCircle(float radius) {
+    return M_PI * radius * radius;
+}
+
+int main() {
+	float radius = 0;
+	printf("Enter the radius of the circle: ");
+	scanf("%f", &radius);
+	printf("The area of the circle with radius %.2f is: %.2f.\n", radius, areaOfCircle(radius));
+}
+```
+
+### Pick a random card from a deck
+This uses manual memory allocation, which is beyond the scope of this guide. The functions `calloc` and `realloc` are basically making space for the string variables to live in.
+
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h> // strcpy
+#include <time.h>
+
+char* getRandomFaceValue() {
+    char* faceValue = (char*)calloc(6, sizeof(char)); // make space for the largest possible string we'd need here
+    int value = rand() % 13; // generate a random number (between 0 and a very large number), and make it be 0-12 inclusive
+    if (value == 0) {
+        strcpy(faceValue, "Ace"); // copy the value "Ace" into the variable faceValue
+    }
+    else if (value == 10) {
+        strcpy(faceValue, "Jack");
+    }
+    else if (value == 11) {
+        strcpy(faceValue, "Queen");
+    }
+    else if (value == 12) {
+        strcpy(faceValue, "King");
+    }
+    else {
+        sprintf(faceValue, "%c", value + 48); // convert the value of the integer to the string representation of that integer
+    }
+    return faceValue;
+}
+
+char* getRandomSuit() {
+    char* suit = (char*)calloc(9, sizeof(char));
+    int value = rand() % 4;
+    switch(value) {
+        case 0:
+            strcpy(suit, "Spades");
+            break;
+        case 1:
+            strcpy(suit, "Hearts");
+            break;
+        case 2:
+            strcpy(suit, "Clubs");
+            break;
+        case 3:
+            strcpy(suit, "Diamonds");
+            break;
+        default:
+            break;
+    }
+    return suit;
+}
+
+int main() {
+    srand(time(0)); // seed the random number generator with the current time
+    char* value = getRandomFaceValue();
+    char* suit = getRandomSuit();
+    printf("You picked the %s of %s!\n", value, suit);
+    free(value);
+    free(suit);
+    return 0;
+}
+```
+
+
+### Control an automated sprinkler system
+This runs on a Raspberry Pi, and uses three files. It's part of a personal project of mine. The `#define` statements are called macros, and they are kind of like variables, except a little more dangerous if used improperly. They're frequently used for constants.
+
+retic.h:
+```C
+#ifndef RETIC_H
+#define RETIC_H
+
+#define RETIC_1 26
+#define RETIC_2 19
+#define RETIC_3 13
+#define RETIC_4 11
+#define RETIC_5 9
+#define RETIC_6 10
+
+#endif /* RETIC_H */
+```
+
+controller.c:
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <wiringPi.h>
+#include "retic.h"
+
+void initializePins(int* pins);
+void zeroAllPins(int* pins);
+void setPin(int pinNumber, int* pins);
+
+int main(int argc, char** argv) {
+	if (argc != 2) {
+		fprintf(stderr, "Usage: retic station_number (1-6, or 0 for all off)\n");
+		return 0;
+	}
+	int stationNumber = atoi(argv[1]);
+	if (stationNumber < 0 || stationNumber > 6) {
+		fprintf(stderr, "Invalid station number. Valid: 1-6 or 0 for all off.\n");
+		return 0;
+	}
+
+	int pins[] = {RETIC_1, RETIC_2, RETIC_3, RETIC_4, RETIC_5, RETIC_6};
+
+	wiringPiSetupGpio();
+	initializePins(pins);
+
+	if (stationNumber == 0) {
+		zeroAllPins(pins);
+	}
+	else {
+		setPin(pins[stationNumber - 1], pins);
+	}
+
+	return 0;
+}
+
+void initializePins(int* pins) {
+	for (int i = 0; i < 6; i++) {
+		pinMode(pins[i], OUTPUT);
+	}	
+}
+
+void zeroAllPins(int* pins) {
+	for (int i = 0; i < 6; i++) {
+		digitalWrite(pins[i], HIGH);
+	}
+}
+
+void setPin(int pinNumber, int* pins) {
+	zeroAllPins(pins);
+	digitalWrite(pinNumber, LOW);
+}
+```
+
+status.c:
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <wiringPi.h>
+#include "retic.h"
+
+int main(int argc, char** argv) {
+	if (argc != 1) {
+		printf("Usage: status\n");
+		return 0;
+	}
+
+	int pins[] = {RETIC_1, RETIC_2, RETIC_3, RETIC_4, RETIC_5, RETIC_6};
+	wiringPiSetupGpio();
+	
+	for (int i = 0; i < 6; i++) {
+		if (digitalRead(pins[i]) == LOW) {
+			fprintf(stdout, "%d\n", i + 1);
+			return 0;
+		}
+	}
+	printf("0\n");
+
+	return 0;
+}
 ```
