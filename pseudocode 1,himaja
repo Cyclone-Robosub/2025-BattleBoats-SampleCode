@@ -1,0 +1,21 @@
+pseudo code
+
+for right side course:
+- go forward (1000mm)
+- turn right
+- go forward (600mm)
+- U turn : turn left and go forward a little and turn left
+- go forward (600mm)
+- turn right 
+- go forward (1000mm)
+
+# assuming one sensor for forwad and one for right side
+
+for left side course 
+- go forward (1000mm) # front sensor dist> 250
+- turn left
+- go forward (600mm) # front sensor dist> 200
+- U turn : turn right and go forward a little and turn right
+- go forward (600mm)
+- turn left 
+- go forward (1000mm)
