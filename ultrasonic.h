@@ -16,5 +16,6 @@
 
 void ultrasonicInit();
 float readDistanceCM();
+float readDistanceCM2();
 
 #endif
