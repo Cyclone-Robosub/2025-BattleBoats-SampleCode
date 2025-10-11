@@ -4,6 +4,8 @@ void ultrasonicInit() {
   // configure ultrasonic pins
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+  pinMode(TRIG2_PIN, OUTPUT);
+  pinMode(ECHO2_PIN, INPUT);
 }
 
 float readDistanceCM() {
@@ -17,6 +19,24 @@ float readDistanceCM() {
 
   // Measure microseconds taken for sound to send and bounce back
   long duration_us = pulseIn(ECHO_PIN, HIGH);
+
+  // distance = time * speed of sound
+  // speed of sound in cm / uS = 0.0343
+  float distance = (duration_us * 0.0343) / 2.0;
+  return distance;
+}
+
+float readDistanceCM2(){
+    // Set TRIG low 
+  digitalWrite(TRIG2_PIN, LOW);
+  delayMicroseconds(2);
+  // Pulse TRIG for 10 microseconds 
+  digitalWrite(TRIG2_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG2_PIN, LOW);
+
+  // Measure microseconds taken for sound to send and bounce back
+  long duration_us = pulseIn(ECHO2_PIN, HIGH);
 
   // distance = time * speed of sound
   // speed of sound in cm / uS = 0.0343
