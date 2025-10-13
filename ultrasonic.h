@@ -6,9 +6,9 @@
 // ==============================
 //       Pin configuration
 // ==============================
-#define TRIG_PIN {2,
-#define ECHO_PIN 3
-
+#define TRIG_PINFRONT 2
+#define ECHO_PINFRONT 3
+//there I define the interface of the sensor from the front
 void ultrasonicInit();
 float readDistanceCM();
 
