@@ -6,14 +6,10 @@
 // ==============================
 //       Pin configuration
 // ==============================
-
-#define TRIG_PINFRONT 2
-#define ECHO_PINFRONT 3
-#define TRIG_PINSIDE 8
-#define ECHO_PINSIDE 9
+#define TRIG_PIN 2
+#define ECHO_PIN 3
 
 void ultrasonicInit();
-float readFrontDistCM();
-float readSideDistCM();
+float readDistanceCM();
 
 #endif
